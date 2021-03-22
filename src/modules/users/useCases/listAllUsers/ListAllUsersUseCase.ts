@@ -1,3 +1,5 @@
+import { request } from "express";
+
 import { User } from "../../model/User";
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 
@@ -9,7 +11,15 @@ class ListAllUsersUseCase {
   constructor(private usersRepository: IUsersRepository) {}
 
   execute({ user_id }: IRequest): User[] {
-    // Complete aqui
+    const requestUser = this.usersRepository.findById(user_id);
+
+    if (!requestUser || requestUser.admin === false) {
+      throw new Error("User does not have permission");
+    }
+
+    const users = this.usersRepository.list();
+
+    return users;
   }
 }
 
